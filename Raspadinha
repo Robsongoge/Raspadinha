@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Surpresa!</title>
+  <style>
+    body {
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+    #scratchContainer {
+      position: relative;
+      width: 300px;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    #image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .caption {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="scratchContainer">
+    <img id="image" src="sua-imagem.jpg" alt="Presente" />
+    <canvas></canvas>
+  </div>
+  <div class="caption">parabéns, você ganhou uma cueca do Davi Britto</div>
+
+  <script>
+    const canvas = document.querySelector("canvas");
+    const container = document.getElementById("scratchContainer");
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#cccccc";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    canvas.addEventListener("mousedown", startDraw);
+    canvas.addEventListener("touchstart", startDraw);
+    canvas.addEventListener("mouseup", stopDraw);
+    canvas.addEventListener("mouseleave", stopDraw);
+    canvas.addEventListener("touchend", stopDraw);
+
+    let isDrawing = false;
+
+    function startDraw(e) {
+      isDrawing = true;
+      draw(e);
+    }
+
+    function stopDraw() {
+      isDrawing = false;
+      ctx.beginPath();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("touchmove", draw);
+  </script>
+</body>
+</html>
